@@ -90,12 +90,19 @@ function instructions() {
   oneLineSpace();
 }
 
+function losingGameMessage(randomNumber) {
+  console.log("You Lost all your chances..😬")
+  console.log("THE PATTERN WAS : ", randomNumber); 
+  oneLineSpace();
+
+}
+
 function mainFunction(number) {
-  let chances = 7;
   
   const randomNumber = generateGivenNumberOfDigit(number);
   instructions();
-  while (chances > 0) {
+
+  for (let chances = 7; chances > 0; chances--) {
     totalNumberOfChancesMessages(chances);
     oneLineSpace();
     const guess = userInput();
@@ -104,12 +111,11 @@ function mainFunction(number) {
     }
     const clue = giveClue(randomNumber, guess);
     console.log(addMarkNoOfTimes(17, " "),clue);
-    chances--;
+   
   }
-  console.log("You Lost all your chances..😬")
-  console.log("THE PATTERN WAS : ", randomNumber); 
-  oneLineSpace();
+  losingGameMessage(randomNumber);
   const a = confirm("Do you want to play this Game Again..?");
+  oneLineSpace();
   return startGame(a);
 }
 
