@@ -1,32 +1,53 @@
 const PLAYER_1 = "X";
 const PLAYER_2 = "O";
 
-function hasSomeOneWon(number) {
-  if (number[0] === number[1] && number[0] === number[2]) {
-    return true;
+let inputUser1 = "";
+let inputUser2 = "";
+
+function allSubSets(a) {
+  switch (a) {
+    case 1: return "123";
+    case 2: return "456";
+    case 3: return "789";
+    case 4: return "147";
+    case 5: return "258";
+    case 6: return "369";
+    case 7: return "159";
+    case 8: return "357";
   }
-  if (number[3] === number[4] && number[3] === number[5]) {
-    return true;
+}
+
+function issubSetIsPresentInSet(set, subSet) {
+  for (let i = 0; i < subSet.length; i++) {
+    const isPresent = isCharPresent(set, subSet[i]);
+    if (!isPresent) {
+      return false;
+    }
   } 
-  if (number[6] === number[7] && number[6] === number[8]) {
-    return true;
-  } 
-  if (number[0] === number[3] && number[0] === number[6]) {
-    return true;
-  }
-  if (number[1] === number[4] && number[1] === number[7]) {
-    return true;
-  }
-  if (number[2] === number[5] && number[2] === number[8]) {
-    return true;
-  }
-  if (number[0] === number[4] && number[0] === number[8]) {
-    return true;
-  }
-  if (number[2] === number[4] && number[2] === number[6]) {
-    return true;
+  return true; 
+}
+
+function hasSomeOneWon(player) {
+
+  const isSomeOneWon = player === "X" ? inputUser1 : inputUser2;
+  return isCurrentPlayerWin(isSomeOneWon);
+}
+
+function isCurrentPlayerWin(userHasToCheck) {
+  for (let i = 1; i <= 8; i++) {
+    if (issubSetIsPresentInSet(userHasToCheck, allSubSets(i))) {
+      return true;
+    }
   }
   return false;
+}
+
+function currentuser(player, a) {
+  
+  if (player === PLAYER_1) {
+    return inputUser1 += a;
+  } 
+  return inputUser2 += a;
 }
 
 function replace(text, match, replacement) {
@@ -51,20 +72,26 @@ function isCharPresent(string, char) {
 
 function inputPlayer1(number, player) {
   const a = prompt(""); 
-  
+
   if (!isCharPresent(number, a)) {
     console.log("Enter Valid");
-    return inputPlayer1(number,);
+    return inputPlayer1(number, player);
   }
+  currentuser(player, a);
+
   const updatedInput = replace(number, a, player);
   return updatedInput;
 }
 
+function formatToRow(firstIndex, secondIndex, thirdIndex) {
+  return " " + firstIndex + " | " + secondIndex + " | " + thirdIndex + "\n";
+}
+
 function makeFrame(number) {
   const horizontalLine = "-----------\n";
-  const row1 = " " + number[0] + " | " + number[1] + " | " + number[2] + "\n";
-  const row2 = " " + number[3] + " | " + number[4] + " | " + number[5] + "\n";
-  const row3 = " " + number[6] + " | " + number[7] + " | " + number[8] + "\n";
+  const row1 = formatToRow(number[0], number[1], number[2]);
+  const row2 = formatToRow(number[3], number[4], number[5]);
+  const row3 = formatToRow(number[6], number[7], number[8]);
   const frame = row1 + horizontalLine + row2 + horizontalLine + row3;
   return frame;
 } 
@@ -73,23 +100,31 @@ function showFrame(number) {
   console.log(makeFrame(number));
 }
 
-function series() {
+function startGame() {
 
   let number = "123456789";
-  console.log(makeFrame(number));
+  showFrame(number);
 
   for (let turn = 9; turn >= 0; turn--) {
+    
     const decidePlayer = turn % 2 === 1 ? PLAYER_1 : PLAYER_2;
     number = inputPlayer1(number, decidePlayer);
     showFrame(number);
-    if (hasSomeOneWon(number)) {
-      console.log(decidePlayer, "is Won In very few MOVES");
-      return "Congrations 🎉 you Win";
-
+    if (hasSomeOneWon(decidePlayer)) {
+      console.log(decidePlayer, "is Won In very few MOVES ");
+      console.log("Congrations 🎉 you Win");
+      return confirmationForWantToPlay();
     }
   }
-
-  return "Game Die:";
+  console.log("Game Die : ");
+  return confirmationForWantToPlay();
 }
 
-console.log(series());
+console.log("-------** Tic Tac Toe **------");
+
+function confirmationForWantToPlay() {
+  const wantToPlay = confirm("Do you Want to play this Game");
+  return wantToPlay ? startGame() : "Thanks for Your time..";
+}
+
+console.log(confirmationForWantToPlay());
